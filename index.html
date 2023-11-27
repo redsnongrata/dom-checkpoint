@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Shopping Cart</h1>
+  <div id="cart"></div>
+  <hr />
+  <div id="total-price">Total: $0</div>
+
+  <script>
+    var items = [
+      { name: "Item 1", price: 40, quantity: 1, image: "//hourscollection.com/cdn/shop/products/Black-Blank3_1.png?v=1665434810" },
+      { name: "Item 2", price: 50, quantity:  1, image: "//hourscollection.com/cdn/shop/products/Oatmealhoodiecopy.jpg?v=1681266179" },
+      { name: "Item 3", price: 45, quantity: 1, image: "//hourscollection.com/cdn/shop/products/Grey-Blank4.jpg?v=1648093694" },
+    ];
+
+    var cartElement = document.getElementById("cart");
+    var totalPriceElement = document.getElementById("total-price");
+
+    items.forEach(item => {
+      var itemElement = document.createElement("div");
+      itemElement.classList.add("item");
+
+      var nameElement = document.createElement("span");
+      nameElement.textContent = item.name;
+      itemElement.appendChild(nameElement);
+
+      var quantityElement = document.createElement("span");
+      quantityElement.textContent = "Quantity: " + item.quantity;
+      itemElement.appendChild(quantityElement);
+
+      var priceElement = document.createElement("span");
+      priceElement.textContent = "Price: $" + item.price;
+      itemElement.appendChild(priceElement);
+
+      var imageElement = document.createElement("img");
+      imageElement.src = item.image;
+      imageElement.alt = item.name;
+      itemElement.appendChild(imageElement);
+
+      var increaseButton = document.createElement("button");
+      increaseButton.textContent = "+";
+      increaseButton.addEventListener("click", function () {
+        item.quantity++;
+        quantityElement.textContent = "Quantity: " + item.quantity;
+        updateTotalPrice();
+      });
+      itemElement.appendChild(increaseButton);
+
+      var decreaseButton = document.createElement("button");
+      decreaseButton.textContent = "-";
+      decreaseButton.addEventListener("click", function () {
+        if (item.quantity > 0) {
+          item.quantity--;
+          quantityElement.textContent = "Quantity: " + item.quantity;
+          updateTotalPrice();
+        }
+      });
+      itemElement.appendChild(decreaseButton);
+
+      var likeButton = document.createElement("button");
+      likeButton.textContent = "Like";
+      likeButton.classList.add("like-button");
+      likeButton.addEventListener("click", function () {
+        likeButton.classList.toggle("liked");
+        updateTotalPrice();
+      });
+      itemElement.appendChild(likeButton);
+
+      var deleteButton = document.createElement("button");
+      deleteButton.textContent = "Delete";
+      deleteButton.addEventListener("click", function () {
+        cartElement.removeChild(itemElement);
+        items = items.filter(function (i) {
+          return i !== item;
+        });
+        updateTotalPrice();
+      });
+      itemElement.appendChild(deleteButton);
+
+      cartElement.appendChild(itemElement);
+    });
+
+    function updateTotalPrice() {
+      var total = items.reduce(function (acc, item) {
+        return acc + item.price * item.quantity * (item.isLiked ? 1.2 : 1);
+      }, 0);
+
+      totalPriceElement.textContent = "Total: $" + total.toFixed(2);
+    }
+
+    updateTotalPrice();
+  </script>
+</body>
+</html>
